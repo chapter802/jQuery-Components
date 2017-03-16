@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+  <title>无缝轮播</title>
+<style type="text/css">
+  body, div, li, ol, p, ul {
+    margin: 0;
+    padding: 0;
+}
+  ul, ol, li {
+    list-style: none;
+}
+  #container {
+    position: relative;
+    width: 100%;
+    margin: 50px auto;
+    overflow: hidden;
+  }
+  #container .imgList {
+    position: relative;
+    width: 400%;
+  }
+  #container .imgList li {
+    float: left;
+    width: 25%;
+    height: 562px;
+  }
+  #prev, #next {
+    position: absolute;
+    top: 252px;
+    width: 50px;
+    height: 60px;
+    font-size: 50px;
+    line-height: 60px;
+    cursor: pointer;
+  }
+  #prev {
+    left: 0;
+  }
+  #next {
+    right: 0;
+    text-align: right;
+  }
+</style>
+<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+</head>
+<body>
+<div id="container">
+  <ul class='imgList'>
+    <li class="active"><img src="img/1.jpg" alt="" /></li>
+    <li><img src="img/2.jpg" alt="" /></li>
+    <li><img src="img/3.jpg" alt="" /></li>
+    <li><img src="img/1.jpg" alt="" /></li>
+  </ul>
+
+  <div id="prev">&lt;</div>
+  <div id="next">&gt;</div>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var $container = $('#container'),
+          $lenLi = $container.find('ul>li'),
+          len = $lenLi.size(),
+          width = $lenLi.width(),
+          index = $('.active').index(),
+          $imgUl = $container.find('.imgList'),
+          left;
+    var timer = setInterval(function(){
+      move();
+    },3000);
+    $('#next').click(function() {
+      clearInterval(timer);
+      if (index < 0) {
+        return false;
+      }
+      $('.active').removeClass('active');
+      move();
+    });
+    $('#prev').click(function() {
+      clearInterval(timer);
+      moveLeft();
+    });
+
+    function move() {
+     if (index == len - 1) {
+        $imgUl.stop(true,true).css('left',0);
+        index = 0;
+      }
+      index++;
+      left = -index * width + 'px';
+      $imgUl.stop(true,true)
+      .animate({'left': left}, 800, addMove());
+}
+
+    function moveLeft() {
+       if (index < 0) {
+        return false;
+      }
+      if (index == 0) {
+        $imgUl.stop(true,true).css('left',-(len-1) * width + 'px');
+        index = len - 1;
+      }
+      index--;
+      left = -index * width + 'px';
+      $imgUl.stop(true,true).animate({'left':left}, 800, addMove());
+    }
+
+    function addMove() {
+      $lenLi.eq(index).addClass('active');
+    }
+    $lenLi .hover(function() {
+            clearInterval(timer);
+        }, function() {
+           timer = setInterval(function(){move();}, 3000);
+        });
+
+    $(window).resize(function() {
+    location.reload();
+});
+})();
+</script>
+</body>
+</html>
